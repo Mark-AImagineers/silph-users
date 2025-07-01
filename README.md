@@ -6,6 +6,7 @@ User service for **Project Silph** — manages registration, authentication, and
 - Social login integrations
 - Audit logging and account recovery features
 - Full localization for Filipino users
+- Expired or blacklisted token handling
 
 Security and modularity are top priorities — this service is structured to be testable, maintainable, and production-ready from the start.
 
@@ -18,6 +19,7 @@ Security and modularity are top priorities — this service is structured to be 
 - **User identity** — creation, storage, and retrieval of user records
 - **Authentication** — credential verification and JWT issuance
 - **Authorization context** — validating and refreshing tokens, exposing user claims
+- **Token safety** — rejecting expired or blacklisted tokens
 - **Basic profile data** — usernames, emails, and optional public info
 
 In short:  

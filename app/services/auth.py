@@ -9,6 +9,7 @@ from app.core.token import (
     create_refresh_token,
     ALGORITHM,
 )
+from app.services.token_blacklist import TokenBlacklistService
 from app.core.config import settings
 from jose import jwt, JWTError
 from sqlalchemy.exc import IntegrityError
@@ -55,15 +56,21 @@ class AuthService:
         try:
             payload = jwt.decode(refresh_token, settings.JWT_SECRET, algorithms=[ALGORITHM])
             user_id: str | None = payload.get("sub")
-            if user_id is None:
+            jti: str | None = payload.get("jti")
+            if user_id is None or jti is None:
                 raise JWTError()
         except JWTError as exc:
             raise ValueError("Invalid refresh token") from exc
+
+        if await TokenBlacklistService.is_blacklisted(jti, db):
+            raise ValueError("Invalid refresh token")
 
         result = await db.execute(select(User).where(User.id == int(user_id)))
         user = result.scalar_one_or_none()
         if user is None:
             raise ValueError("User not found")
+
+        await TokenBlacklistService.blacklist(jti, db)
 
         claims = {"sub": str(user.id), "email": user.email}
         return TokenPair(
