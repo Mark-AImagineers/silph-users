@@ -40,3 +40,8 @@ class AuthService:
         if not verify_password(password, user.hashed_password):
             return None
         return user
+
+    @staticmethod
+    async def get_user_by_id(user_id: int, db: AsyncSession) -> User | None:
+        """Retrieve a user by ID."""
+        return await db.get(User, user_id)

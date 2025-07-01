@@ -1,16 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.session import async_session
+from app.db.session import get_db
 from app.schemas.user import UserCreate, UserRead
 from app.schemas.token import TokenPair
-from app.core.token import create_access_token, create_refresh_token
+from app.core.token import (
+    create_access_token,
+    create_refresh_token,
+    get_current_user,
+)
 from app.services.auth import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
-async def get_db() -> AsyncSession: # type: ignore
-    async with async_session() as session:
-        yield session
 
 @router.post("/register", response_model=UserRead)
 async def register_user(data: UserCreate, db: AsyncSession = Depends(get_db)):
@@ -36,3 +37,11 @@ async def login(
         access_token=create_access_token(claims),
         refresh_token=create_refresh_token(claims),
     )
+
+
+@router.get("/me", response_model=UserRead)
+async def read_current_user(
+    current_user: UserRead = Depends(get_current_user),
+) -> UserRead:
+    """Return the authenticated user's information."""
+    return current_user
