@@ -1,0 +1,8 @@
+{
+  "name": "silph-users",
+  "version": "0.1.0",
+  "description": "User service for Project Silph",
+  "env": "local",
+  "last_updated": "2025-07-01",
+  "status": "active"
+}
