@@ -14,6 +14,21 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - README and changelog templates
 
 ---
+## [0.1.1] - 2025-07-01
+
+### Added
+- Environment-driven config using `pydantic-settings`
+- Database connection via `asyncpg` and SQLAlchemy
+- Password hashing and verification using `bcrypt`
+- User model and migration-ready table schema
+- User registration with email/username uniqueness checks
+- User login with JWT access and refresh token generation
+- `/auth/me` endpoint using reusable `get_current_user()` logic
+- `/health` and `/version` system endpoints
+- Full container setup via Docker and Docker Compose
+- Initial security layers: token-based auth, input validation, hashed passwords
+
+---
 ## 🧭 Planned Items
 
 This section lists all major components to be implemented over time to complete the `silph-users` service.
