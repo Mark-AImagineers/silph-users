@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from sqlalchemy.exc import IntegrityError
 
 class AuthService:
@@ -30,3 +30,13 @@ class AuthService:
         except IntegrityError:
             await db.rollback()
             raise ValueError("Failed to create user - possible duplicate entry")
+    
+    @staticmethod
+    async def authenticate(email: str, password: str, db: AsyncSession) -> User | None:
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        if not user:
+            return None
+        if not verify_password(password, user.hashed_password):
+            return None
+        return user

@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     DATABASE_URL: str = "postgresql://user:pass@localhost/silph_users"
 
+    JWT_SECRET: str
+
     class Config:
         env_file = ".env"
 
