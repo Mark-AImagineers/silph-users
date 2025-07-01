@@ -29,28 +29,20 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Initial security layers: token-based auth, input validation, hashed passwords
 
 ---
+## [0.1.2] - 2025-07-01
+
+### Added
+- Expired or blacklisted token handling
+
+---
 ## 🧭 Planned Items
 
 This section lists all major components to be implemented over time to complete the `silph-users` service.
 
-- Environment config and validation
-- Dockerfile and Docker Compose setup
-- Database connection and models
 - Alembic migrations (optional)
-- User registration endpoint
-- Password hashing (e.g. bcrypt)
-- User login endpoint
-- JWT access and refresh token generation
-- Token expiry and validation logic
-- Token refresh endpoint
-- User info (`/me`) endpoint
-- Email and username uniqueness checks
 - Public user profile retrieval (optional)
 - User profile update endpoint
 - Role/claim system for authorization context
-- Dependency-based authentication guards
-- Reusable `get_current_user()` logic
-- Expired or blacklisted token handling (optional)
 - Request logging and structured error responses
 - Rate limiting (optional, e.g. login abuse prevention)
 - Unit and integration test coverage
