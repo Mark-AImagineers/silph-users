@@ -34,6 +34,17 @@ async def login(
         refresh_token=create_refresh_token(claims),
     )
 
+@router.post("/refresh", response_model=TokenPair)
+async def refresh(
+    refresh_token: str = Form(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Generate new tokens using a valid refresh token."""
+    try:
+        return await AuthService.refresh(refresh_token, db)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
 @router.get("/me", response_model=UserRead)
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user

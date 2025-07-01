@@ -2,7 +2,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models.user import User
 from app.schemas.user import UserCreate
+from app.schemas.token import TokenPair
 from app.core.security import hash_password, verify_password
+from app.core.token import (
+    create_access_token,
+    create_refresh_token,
+    ALGORITHM,
+)
+from app.core.config import settings
+from jose import jwt, JWTError
 from sqlalchemy.exc import IntegrityError
 
 class AuthService:
@@ -40,3 +48,25 @@ class AuthService:
         if not verify_password(password, user.hashed_password):
             return None
         return user
+
+    @staticmethod
+    async def refresh(refresh_token: str, db: AsyncSession) -> TokenPair:
+        """Return new JWT tokens using the provided refresh token."""
+        try:
+            payload = jwt.decode(refresh_token, settings.JWT_SECRET, algorithms=[ALGORITHM])
+            user_id: str | None = payload.get("sub")
+            if user_id is None:
+                raise JWTError()
+        except JWTError as exc:
+            raise ValueError("Invalid refresh token") from exc
+
+        result = await db.execute(select(User).where(User.id == int(user_id)))
+        user = result.scalar_one_or_none()
+        if user is None:
+            raise ValueError("User not found")
+
+        claims = {"sub": str(user.id), "email": user.email}
+        return TokenPair(
+            access_token=create_access_token(claims),
+            refresh_token=create_refresh_token(claims),
+        )
