@@ -45,6 +45,7 @@ This section lists all major components to be implemented over time to complete 
 - Future-ready: password reset token flow
 - Future-ready: user deletion or anonymization
 - Future-ready: admin-level access override
+- Added Security - Consider - Argon2, LockBox, Rate Limiting, Rehash Detection, Pepper, obscure DB
 
 
 

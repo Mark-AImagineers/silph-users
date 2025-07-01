@@ -3,13 +3,14 @@ from app.db.session import engine
 from app.models import user
 from app.models.base import Base
 from fastapi import FastAPI
-from app.api import health, version
+from app.api import health, version, auth
 
 app = FastAPI(title="Silph Users")
 
 # Include base routes
 app.include_router(health.router)
 app.include_router(version.router)
+app.include_router(auth.router)
 
 @app.on_event("startup")
 async def on_startup():
